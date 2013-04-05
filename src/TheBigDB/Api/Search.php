@@ -7,6 +7,7 @@
  * @license MIT
  */
 namespace TheBigDB\Api;
+use TheBigDB\Api\Action;
 use DateTime;
 use BadMethodCallException;
 use RuntimeException;
@@ -15,7 +16,7 @@ use RuntimeException;
  * TheBigDB\Api\Search
  * Represents a (GET) search request
  */
-class Search
+class Search extends Action
 {
     // YYYY-MM-DD HH:MM:SS
     const PERIOD_DATE_FORMAT = 'Y-m-d H:i:s';
@@ -31,47 +32,19 @@ class Search
     protected $extra = array();
 
     /**
-     * Builds a hash of arguments to be used for the API request.
-     * @return array
+     * @return string
      */
-    public function toRequestHash()
+    public function getMethod()
     {
-        // Bail out early if we have nothing to search for.
-        if(count($this->nodes) == 0) {
-            throw new RuntimeException(
-                'Cannot perform a query without any specified nodes; use ' . __CLASS__ . '::find'
-            );
-        }
+        return 'GET';
+    }
 
-        $args = array();
-
-        if($period = $this->getPeriodHash()) {
-            $args['period'] = $period;
-        }
-
-        if($this->page !== null) {
-            $args['page'] = $page;
-        }
-
-        // No point checking for min/max if we have an exact value
-        if($this->exactNodes !== null) {
-            $args['nodes_count_exactly'] = $this->exactNodes;
-        } else {
-            if($this->minNodes !== null) {
-                $args['nodes_count_min'] = $this->minNodes;
-            }
-            if($this->maxNodes !== null) {
-                $args['nodes_count_max'] = $this->maxNodes;
-            }
-        }
-
-        $period['nodes'] = $this->nodes;
-
-        // Merge any additional arguments provided through
-        // Search::with
-        $args = array_merge($args, $extra);
-
-        return $args;
+    /**
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return 'statements/search';
     }
 
     /**
@@ -179,6 +152,49 @@ class Search
     {
         $this->periodTo = $date;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    protected function toRequestHash()
+    {
+        // Bail out early if we have nothing to search for.
+        if(count($this->nodes) == 0) {
+            throw new RuntimeException(
+                'Cannot perform a query without any specified nodes; use ' . __CLASS__ . '::find'
+            );
+        }
+
+        $args = array();
+
+        if($period = $this->getPeriodHash()) {
+            $args['period'] = $period;
+        }
+
+        if($this->page !== null) {
+            $args['page'] = $page;
+        }
+
+        // No point checking for min/max if we have an exact value
+        if($this->exactNodes !== null) {
+            $args['nodes_count_exactly'] = $this->exactNodes;
+        } else {
+            if($this->minNodes !== null) {
+                $args['nodes_count_min'] = $this->minNodes;
+            }
+            if($this->maxNodes !== null) {
+                $args['nodes_count_max'] = $this->maxNodes;
+            }
+        }
+
+        $period['nodes'] = $this->nodes;
+
+        // Merge any additional arguments provided through
+        // Search::with
+        $args = array_merge($args, $extra);
+
+        return $args;
     }
 
     /**

@@ -7,6 +7,7 @@
  * @license MIT
  */
 namespace TheBigDB;
+use TheBigDB\Api\Action;
 use TheBigDB\Api\Search;
 
 /**
@@ -14,12 +15,15 @@ use TheBigDB\Api\Search;
  */
 class Api
 {
-    private $errorsAsExceptions = false;
+    protected $errorsAsExceptions = false;
+    protected $http;
+
+    /** @todo setters */
+    protected $endpoint = 'api.thebigdb.com/v1';
 
     /**
      * Should errors in an API response be translated to
      * exceptions?
-     *
      * @api
      * @param  bool $errorsAsExceptions
      * @return self
@@ -31,10 +35,33 @@ class Api
     }
 
     /**
+     * Executes an action on the API
+     * @todo  Abstract HTTP interface
+     * @param TheBigDB\Api\Action $action
+     */
+    public function execute(Action $action)
+    {
+        $args      = $action->toRequestHash();
+        $method    = $action->getMethod();
+        $namespace = $action->getNamespace();
+    }
+
+    /**
+     * Prepares a generic action instance
+     * @param  TheBigDB\Api\Action $action
+     * @return TheBigDB\Api\Action
+     */
+    protected function action(Action $action)
+    {
+        $action->setApi($this);
+        return $action;
+    }
+
+    /**
      * @api
      */
     public function search()
     {
-        return new Search($this);
+        return $this->action(new Search);
     }
 }
