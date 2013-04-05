@@ -1,5 +1,5 @@
 {
-    "hash": "241561a7c66034bfef6aeb84ce783faa",
+    "hash": "4013f4bd4cdca01b74bbefca699d77b5",
     "packages": [
         {
             "name": "kriswallsmith/buzz",
@@ -60,9 +60,9 @@
     "stability-flags": {
         "kriswallsmith/buzz": 20
     },
-    "platform": [
-
-    ],
+    "platform": {
+        "php": ">=5.3.0"
+    },
     "platform-dev": [
 
     ]
