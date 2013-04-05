@@ -1,0 +1,7 @@
+{
+    "name": "filp/thebigdb-php",
+    "require": {
+        "kriswallsmith/buzz": "dev-master",
+        "php": ">=5.3.0"
+    }
+}
